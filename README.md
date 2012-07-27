@@ -20,19 +20,21 @@ Or install it yourself as:
 
 Describe in an yaml file the fields and its xpos, ypos and style/type params:
 
-    # example.yml
-    text1: [20, 42, {style: bold, color: '000000', size: 12}]
+```yaml
+# example.yml
+text1: [20, 42, {style: bold, color: '000000', size: 12}]
+```
 
 ### Available params:
 
-* `style`: bold|normal|italic|bold_italic *[normal]*
-* `size`: float *[12]*
-* `align`: left|center|right *[left]*
-* `font`: Prawn supported fonts *[Times-Roman]*
-* `color`: RGB color [00000]
-* `fixed`: A fixed text [false]
-* `format`: Formating hooks (currency|date) [false]
-* `type`: text|image|codebar [text]
+* `style`: **bold|normal|italic|bold_italic** *[normal]*
+* `size`: **float** *[12]*
+* `align`: **left|center|right** *[left]*
+* `font`: **Prawn supported fonts** *[Times-Roman]*
+* `color`: **RGB color** *[00000]*
+* `fixed`: **A fixed text** *[false]*
+* `format`: **Formating hooks** (currency|date) *[false]*
+* `type`: **text|image|codebar** *[text]*
 
 ## Contributors
 
