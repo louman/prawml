@@ -22,7 +22,18 @@ Describe in an yaml file the fields and its xpos, ypos and style/type params:
 
 ```yaml
 # example.yml
-text1: [20, 42, {style: bold, color: '000000', size: 12}]
+text1: [20, 15, {style: bold, color: '000000', size: 12}] 
+text2: [20, 42]
+```
+### PDF generation example:
+
+```ruby
+pdf = Prawml.new('path_to_yaml/example.yml')
+pdf.generate({
+    :text1 => 'Prawml',
+    :text2 => 'The pdf generator'
+})
+pdf.render_file('example.pdf')
 ```
 
 ### Available params:
