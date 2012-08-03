@@ -20,24 +20,36 @@ Or install it yourself as:
 
 Describe in an yaml file the fields and its xpos, ypos and style/type params:
 
-    # example.yml
-    text1: [20, 42, {style: bold, color: '000000', size: 12}]
+```yaml
+# example.yml
+text1: [20, 15, {style: bold, color: '000000', size: 12}] 
+text2: [20, 42]
+```
+PDF generation example:
+
+```ruby
+pdf = Prawml.new('path_to_yaml/example.yml')
+pdf.generate({
+    :text1 => 'Prawml',
+    :text2 => 'The pdf generator'
+}).render_file('example.pdf')
+```
 
 ### Available params:
 
-    *style:* bold|normal|italic|bold_italic [normal]
-    *size:* float [12]
-    *align:* left|center|right [left]
-    *format:* "hook" (currency|date) [false]
-    *font:* "Fonte definida no sistema" [Arial]
-    *type:* text|image|codebar [text]
-    *color:* "RGB" [00000]
-    *fixed:* "string" [false]
+* `style`: **bold|normal|italic|bold_italic** *[normal]*
+* `size`: **float** *[12]*
+* `align`: **left|center|right** *[left]*
+* `font`: **Prawn supported fonts** *[Times-Roman]*
+* `color`: **RGB color** *[00000]*
+* `fixed`: **A fixed text** *[false]*
+* `format`: **Formating hooks** (currency|date) *[false]*
+* `type`: **text|image|codebar** *[text]*
 
 ## Contributors
 
-1. Wanderson Policarpo (github.com/wpolicarpo)
-2. Edson Júnior (github.com/ebfjunior)
+1. Wanderson Policarpo (http://github.com/wpolicarpo)
+2. Edson Júnior (http://github.com/ebfjunior)
 
 ## Contributing
 
