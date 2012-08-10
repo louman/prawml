@@ -18,7 +18,7 @@ module Prawml
     end
 
     def generate(values)
-        @rules.each do |field, params|
+        @rules.each do |field, draws|
             defaults = {
                 :style => :normal,
                 :size => 12,
@@ -30,9 +30,14 @@ module Prawml
                 :fixed => false
             }
 
-            params[2] = defaults.merge params[2]
+            unless draws[0].is_a? Array
+              draws = [draws]
+            end
 
-            send :"draw_#{params[2][:type]}", values[field.to_sym], params
+            draws.each do |params|
+              params[2] = defaults.merge params[2]
+              send :"draw_#{params[2][:type]}", values[field.to_sym], params
+            end
         end
 
         @pdf
@@ -40,16 +45,18 @@ module Prawml
 
     protected
 
-    def draw_text(text, options)
-        params = options[2]
+    def draw_text(text, params)
+        xpos, ypos, options = params
 
-        @pdf.fill_color params[:color]
-        @pdf.font params[:font], options[2]
-        @pdf.draw_text text, :at => [align(text, options[0], params[:align]), options[1]]
+        @pdf.fill_color options[:color]
+        @pdf.font options[:font], options
+        @pdf.draw_text text, :at => [align(text, xpos, options[:align]), ypos]
     end
 
     def draw_barcode(barcodes, params)
-        barcodes.inject(params[0]) do |xpos, map|
+        xpos, ypos, options = params
+
+        barcodes.inject(xpos) do |xpos, map|
             @pdf.line_width map[0]
             @pdf.stroke_color map[2]
             @pdf.stroke { @pdf.vertical_line params[1], params[1] + map[1], :at => xpos }
