@@ -26,7 +26,7 @@ text1:
   - [20, 15, {style: bold, color: '000000', size: 12}]
   - [40, 65, {style: italic, color: '123456', size: 16}]
 text2: [20, 42]
-barcode1: [240, 620, {type => 'barcode'}]
+barcode1: [240, 620, {type: 'barcode'}]
 ```
 PDF generation example:
 
