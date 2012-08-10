@@ -22,8 +22,11 @@ Describe in an yaml file the fields and its xpos, ypos and style/type options:
 
 ```yaml
 # example.yml
-text1: [20, 15, {style: bold, color: '000000', size: 12}]
+text1:
+  - [20, 15, {style: bold, color: '000000', size: 12}]
+  - [40, 65, {style: italic, color: '123456', size: 16}]
 text2: [20, 42]
+barcode1: [240, 620, {:type => :barcode}]
 ```
 PDF generation example:
 
@@ -31,7 +34,19 @@ PDF generation example:
 pdf = Prawml::PDF.new('path_to_yaml/example.yml')
 pdf.generate({
     :text1 => 'Prawml',
-    :text2 => 'The pdf generator'
+    :text2 => 'The pdf generator',
+    :barcode1 => [
+        [5, 137, '000000'],
+        [4, 137, 'FFFFFF'],
+        [5, 137, '000000'],
+        [4, 137, 'FFFFFF'],
+        [5, 137, '000000'],
+        [4, 137, 'FFFFFF'],
+        [5, 137, '000000'],
+        [4, 137, 'FFFFFF'],
+        [5, 137, '000000'],
+        [4, 137, 'FFFFFF']
+    ]
 }).render_file('example.pdf')
 ```
 
