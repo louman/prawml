@@ -18,24 +18,24 @@ Or install it yourself as:
 
 ## Usage
 
-Describe in an yaml file the fields and its xpos, ypos and style/type params:
+Describe in an yaml file the fields and its xpos, ypos and style/type options:
 
 ```yaml
 # example.yml
-text1: [20, 15, {style: bold, color: '000000', size: 12}] 
+text1: [20, 15, {style: bold, color: '000000', size: 12}]
 text2: [20, 42]
 ```
 PDF generation example:
 
 ```ruby
-pdf = Prawml.new('path_to_yaml/example.yml')
+pdf = Prawml::PDF.new('path_to_yaml/example.yml')
 pdf.generate({
     :text1 => 'Prawml',
     :text2 => 'The pdf generator'
 }).render_file('example.pdf')
 ```
 
-### Available params:
+### Available options:
 
 * `style`: **bold|normal|italic|bold_italic** *[normal]*
 * `size`: **float** *[12]*
