@@ -35,18 +35,7 @@ pdf = Prawml::PDF.new('path_to_yaml/example.yml')
 pdf.generate({
     :text1 => 'Prawml',
     :text2 => 'The pdf generator',
-    :barcode1 => [
-        [5, 137, '000000'],
-        [4, 137, 'FFFFFF'],
-        [5, 137, '000000'],
-        [4, 137, 'FFFFFF'],
-        [5, 137, '000000'],
-        [4, 137, 'FFFFFF'],
-        [5, 137, '000000'],
-        [4, 137, 'FFFFFF'],
-        [5, 137, '000000'],
-        [4, 137, 'FFFFFF']
-    ]
+    :barcode1 => 'My little barcode string'
 }).render_file('example.pdf')
 ```
 
@@ -59,7 +48,7 @@ pdf.generate({
 * `color`: **RGB color** *[00000]*
 * `fixed`: **A fixed text** *[false]*
 * `format`: **Formating hooks** (currency|date) *[false]*
-* `type`: **text|image|codebar** *[text]*
+* `type`: **text|image|barcode** *[text]*
 
 ## Contributors
 

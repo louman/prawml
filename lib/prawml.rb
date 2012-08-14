@@ -1,5 +1,7 @@
 require "prawml/version"
 require "prawn"
+require "barby/barcode/code_25_interleaved"
+require "barby/outputter/prawn_outputter"
 
 module Prawml
 
@@ -35,8 +37,14 @@ module Prawml
             end
 
             draws.each do |params|
-              params[2] = defaults.merge params[2]
-              send :"draw_#{params[2][:type]}", values[field.to_sym], params
+              options = defaults.merge params[2]
+
+              params[2].merge options
+
+              @pdf.fill_color options[:color]
+              @pdf.font options[:font], options
+
+              send :"draw_#{options[:type]}", values[field.to_sym], params
             end
         end
 
@@ -48,21 +56,20 @@ module Prawml
     def draw_text(text, params)
         xpos, ypos, options = params
 
-        @pdf.fill_color options[:color]
-        @pdf.font options[:font], options
         @pdf.draw_text text, :at => [align(text, xpos, options[:align]), ypos]
     end
 
-    def draw_barcode(barcodes, params)
+    def draw_barcode(text, params)
         xpos, ypos, options = params
 
-        barcodes.inject(xpos) do |xpos, map|
-            @pdf.line_width map[0]
-            @pdf.stroke_color map[2]
-            @pdf.stroke { @pdf.vertical_line params[1], params[1] + map[1], :at => xpos }
+        barcode = Barby::Code25Interleaved.new(text)
 
-            xpos +=  map[0]
-        end
+        outputter = Barby::PrawnOutputter.new(barcode)
+
+        # Medidas obtidas de acordo com o Manual da FEBRABAN
+        # height: 36.8 (13mm)
+        # xdim: 0.721 (gera largura de 103mm)
+        outputter.annotate_pdf(@pdf, :height => 36.8, :xdim => 0.721, :x => xpos, :y => ypos)
     end
 
     def draw_image(image, params)
