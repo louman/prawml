@@ -1,18 +1,20 @@
 require "prawml/version"
 require "prawn"
-require "barby/barcode/code_25_interleaved"
 require "barby/outputter/prawn_outputter"
+require "active_support/inflector"
 
 module Prawml
 
   class PDF
-    def initialize(rules, options = nil)
-        options = options || {}
+    def initialize(rules, options = {})
         @rules = rules
-        @pdf = Prawn::Document.new(
-            :page_size => options[:size] || "A4",
-            :page_layout => options[:layout] || :portrait
-        )
+
+        options = {
+          :page_size => "A4",
+          :page_layout => :portrait
+        }.merge options
+
+        @pdf = Prawn::Document.new options
 
         # TODO: options[:template]
         # utiliza draw_image com a imagem template
@@ -20,18 +22,18 @@ module Prawml
     end
 
     def generate(values)
-        @rules.each do |field, draws|
-            defaults = {
-                :style => :normal,
-                :size => 12,
-                :align => :left,
-                :format => false,
-                :font => 'Times-Roman',
-                :type => :text,
-                :color => '000000',
-                :fixed => false
-            }
+        defaults = {
+            :style => :normal,
+            :size => 12,
+            :align => :left,
+            :format => false,
+            :font => 'Times-Roman',
+            :type => :text,
+            :color => '000000',
+            :fixed => false
+        }
 
+        @rules.each do |field, draws|
             unless draws[0].is_a? Array
               draws = [draws]
             end
@@ -62,14 +64,20 @@ module Prawml
     def draw_barcode(text, params)
         xpos, ypos, options = params
 
-        barcode = Barby::Code25Interleaved.new(text)
+        begin
+          symbology = options[:symbology].to_s
 
-        outputter = Barby::PrawnOutputter.new(barcode)
+          require "barby/barcode/#{symbology}"
 
-        # Medidas obtidas de acordo com o Manual da FEBRABAN
-        # height: 36.8 (13mm)
-        # xdim: 0.721 (gera largura de 103mm)
-        outputter.annotate_pdf(@pdf, :height => 36.8, :xdim => 0.721, :x => xpos, :y => ypos)
+          barby_module = "Barby::#{ActiveSupport::Inflector.camelize(symbology)}"
+
+          barcode = ActiveSupport::Inflector.constantize(barby_module).new(text)
+
+          outputter = Barby::PrawnOutputter.new(barcode)
+          outputter.annotate_pdf(@pdf, options.merge({:x => xpos, :y => ypos}))
+        rescue LoadError
+          raise "Symbology '#{symbology}' is not defined. Please see https://github.com/toretore/barby/wiki/Symbologies for more information on available symbologies."
+        end
     end
 
     def draw_image(image, params)
