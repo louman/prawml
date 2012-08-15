@@ -41,14 +41,19 @@ pdf.generate({
 
 ### Available options:
 
-* `style`: **bold|normal|italic|bold_italic** *[normal]*
-* `size`: **float** *[12]*
-* `align`: **left|center|right** *[left]*
-* `font`: **Prawn supported fonts** *[Times-Roman]*
-* `color`: **RGB color** *[00000]*
-* `fixed`: **A fixed text** *[false]*
-* `format`: **Formating hooks** (currency|date) *[false]*
 * `type`: **text|image|barcode** *[text]*
+* `color`: **RGB color** *[00000]*
+* `fixed`: **A fixed text. Ignores values and renders the static text informed** *[false]*
+
+##### Text specific options:
+* `font`: **Any Prawn supported font can be used** *[Times-Roman]*
+* `align`: **left|center|right** *[left]*
+* `size`: **float** *[12]*
+* `style`: **bold|normal|italic|bold_italic** *[normal]*
+* `format`: **Formating hooks** (currency|date) *[false]*
+
+##### Barcode specific options:
+* `symbology`: **Symbologies available in barby gem [seen here](https://github.com/toretore/barby/wiki/Symbologies)** *[nil]*
 
 ## Contributors
 
