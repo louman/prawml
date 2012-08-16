@@ -2,12 +2,21 @@ require "prawml/version"
 require "prawn"
 require "barby/outputter/prawn_outputter"
 require "active_support/inflector"
+require "active_support/core_ext"
+require "yaml"
 
 module Prawml
 
   class PDF
-    def initialize(rules, options = {})
-        @rules = rules
+    def initialize(yaml, options = {})
+        raise "You must pass a valid YAML file or a string with YAML to generate PDF." if yaml.empty?
+
+        begin
+          rules = File.open(yaml)
+        rescue
+          rules = yaml
+        end
+        @rules = YAML::load(rules)
 
         options = {
           :page_size => "A4",
@@ -39,14 +48,14 @@ module Prawml
             end
 
             draws.each do |params|
-              options = defaults.merge params[2]
+              params[2] = defaults.merge(params[2] || {})
+              params[2].symbolize_keys!
+              params[2][:style] = params[2][:style].to_sym
 
-              params[2].merge options
+              @pdf.fill_color params[2][:color]
+              @pdf.font params[2][:font], params[2]
 
-              @pdf.fill_color options[:color]
-              @pdf.font options[:font], options
-
-              send :"draw_#{options[:type]}", values[field.to_sym], params
+              send :"draw_#{params[2][:type]}", values[field.to_sym], params
             end
         end
 
@@ -81,9 +90,9 @@ module Prawml
     end
 
     def draw_image(image, params)
-        # TODO:
-        # image: path da imagem
-        # [x, y, {width, height}]
+      # TODO:
+      # image: path da imagem
+      # [x, y, {width, height}]
     end
 
     private
@@ -104,4 +113,3 @@ module Prawml
   end
 
 end
-
