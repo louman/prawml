@@ -8,6 +8,23 @@ require "yaml"
 module Prawml
 
   class PDF
+    SYMBOLOGIES = {
+      "bookland" => "Bookland",
+      "code_128" => "Code128",
+      "code_25" => "Code25",
+      "code_25_iata" => "Code25IATA",
+      "code_25_interleaved" => "Code25Interleaved",
+      "code_39" => "Code39",
+      "code_93" => "Code93",
+      "data_matrix" => "DataMatrix",
+      "ean_13" => "EAN13",
+      "ean_8" => "EAN8",
+      "gs1_128" => "GS1128",
+      "pdf_417" => "Pdf417",
+      "qr_code" => "QrCode",
+      "upc_supplemental" => "UPCSupplemental"
+    }
+
     def initialize(yaml, options = {})
         raise "You must pass a valid YAML file or a string with YAML to generate PDF." if yaml.empty?
 
@@ -81,7 +98,7 @@ module Prawml
 
           require "barby/barcode/#{symbology}"
 
-          barby_module = "Barby::#{ActiveSupport::Inflector.camelize(symbology)}"
+          barby_module = "Barby::#{SYMBOLOGIES[symbology]}"
 
           barcode = ActiveSupport::Inflector.constantize(barby_module).new(text)
 
@@ -104,7 +121,7 @@ module Prawml
         font = @pdf.font
         width = font.compute_width_of(text.to_s)
 
-        case alignment
+        case alignment.to_sym
         when :center then
             position - width/2
         when :right then
