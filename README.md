@@ -23,10 +23,10 @@ Describe in an yaml file the fields and its xpos, ypos and style/type options:
 ```yaml
 # example.yml
 text1:
-  - [20, 15, {style: bold, color: '000000', size: 12}]
-  - [40, 65, {style: italic, color: '123456', size: 16}]
-text2: [20, 42]
-barcode1: [240, 620, {type: 'barcode'}]
+  - [250, 680, {style: bold, align: center, size: 96, font: 'Helvetica'}]
+  - [220, 0]
+text2: [415, 660, {style: italic, size: 16,align: right, color: '123456'}]
+barcode1: [100, 15, {type: 'barcode', symbology: 'code_25_interleaved'}]
 ```
 PDF generation example:
 
