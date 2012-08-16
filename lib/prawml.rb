@@ -23,11 +23,14 @@ module Prawml
           :page_layout => :portrait
         }.merge options
 
+        template = options[:template]
+        options.delete(:template)
+
         @pdf = Prawn::Document.new options
 
-        # TODO: options[:template]
-        # utiliza draw_image com a imagem template
-        # para forjar um template pdf
+        unless template.nil?
+          draw_image template[:path], [template[:x], template[:y], {:width => template[:width], :height => template[:height]}]
+        end
     end
 
     def generate(values)
@@ -55,7 +58,7 @@ module Prawml
               @pdf.fill_color params[2][:color]
               @pdf.font params[2][:font], params[2]
 
-              send :"draw_#{params[2][:type]}", values[field.to_sym], params
+              send :"draw_#{params[2][:type]}", values[field.to_sym], params unless values[field.to_sym].nil?
             end
         end
 
@@ -90,9 +93,9 @@ module Prawml
     end
 
     def draw_image(image, params)
-      # TODO:
-      # image: path da imagem
-      # [x, y, {width, height}]
+      xpos, ypos, options = params
+
+      @pdf.image image, :at => [xpos, ypos], :width => options[:width], :height => options[:height]
     end
 
     private
