@@ -50,7 +50,7 @@ module Prawml
         end
     end
 
-    def generate(values)
+    def generate(collection)
         defaults = {
             :style => :normal,
             :size => 12,
@@ -75,7 +75,9 @@ module Prawml
               @pdf.fill_color params[2][:color]
               @pdf.font params[2][:font], params[2]
 
-              send :"draw_#{params[2][:type]}", values[field.to_sym], params unless values[field.to_sym].nil?
+	      value = collection.respond_to?(field.to_sym) ? collection.send(field.to_sym) : collection[field.to_sym]
+
+              send :"draw_#{params[2][:type]}", value, params unless value.nil?
             end
         end
 
