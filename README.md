@@ -38,6 +38,7 @@ pdf.generate({
     :barcode1 => 'My little barcode string'
 }).render_file('example.pdf')
 ```
+You can also pass an object that responds to methods described in YAML file.
 
 ### Available options:
 
