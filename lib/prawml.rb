@@ -8,6 +8,9 @@ require "yaml"
 module Prawml
 
   class PDF
+	
+    attr_reader :pdf    
+
     SYMBOLOGIES = {
       "bookland" => "Bookland",
       "code_128" => "Code128",
@@ -35,15 +38,15 @@ module Prawml
         end
         @rules = YAML::load(rules)
 
-        options = {
+        @options = {
           :page_size => "A4",
           :page_layout => :portrait
         }.merge options
 
-        template = options[:template]
-        options.delete(:template)
-
-        @pdf = Prawn::Document.new options
+        template = @options[:template]
+        @options.delete(:template)
+	
+        @pdf = Prawn::Document.new @options
 
         unless template.nil?
           draw_image template[:path], [template[:x], template[:y], {:width => template[:width], :height => template[:height]}]
@@ -72,10 +75,9 @@ module Prawml
               params[2].symbolize_keys!
               params[2][:style] = params[2][:style].to_sym
 
-              @pdf.fill_color params[2][:color]
-              @pdf.font params[2][:font], params[2]
+              set_options params[2]
 
-	      value = collection.respond_to?(field.to_sym) ? collection.send(field.to_sym) : collection[field.to_sym]
+	            value = collection.respond_to?(field.to_sym) ? collection.send(field.to_sym) : collection[field.to_sym]
 
               send :"draw_#{params[2][:type]}", value, params unless value.nil?
             end
@@ -119,9 +121,14 @@ module Prawml
 
     private
 
+    def set_options(options)
+      @pdf.fill_color options[:color]
+      @pdf.font options[:font], options
+    end
+
     def align(text, position, alignment)
         font = @pdf.font
-        width = font.compute_width_of(text.to_s)
+        width = font.compute_width_of(text.to_s.parameterize)
 
         case alignment.to_sym
         when :center then
